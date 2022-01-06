@@ -1,12 +1,16 @@
+<?php
+  $hostname="localhost";
+  $username="root";
+  $password="";
+  $dbname="notes";
 
+  $conn=mysqli_connect($hostname,$username,$password,$dbname);
 
-
-
-
-
-
-
-
+  if(!$conn){
+    die("sorry we cant connect to database".mysqli_error());
+  }
+  
+?>
 <!doctype html>
 <html lang="en">
   <head>
