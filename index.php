@@ -14,13 +14,34 @@
 
   if($_SERVER["REQUEST_METHOD"]=="POST"){
 
-    $title=$_POST['title'];
-    $description=$_POST['description'];
-    $sql="INSERT INTO `notes` (`srno`, `title`, `description`, `date`) VALUES (NULL, '$title', '$description', current_timestamp())";
-    $result=mysqli_query($conn,$sql);
+    if(isset($_POST['srnoEdit'])){
+      $srno= $_POST['srnoEdit'];
+      $titleEdit=$_POST['titleEdit'];
+      $descriptionEdit=$_POST['descriptionEdit'];
+      // echo $srno,$titleEdit,$descriptionEdit;
 
-    if($result){
-      $insert=true;
+      $sql="UPDATE `notes` SET `title`='$titleEdit',`description`='$descriptionEdit' WHERE `srno` = '$srno'";
+      $result=mysqli_query($conn,$sql);
+      // echo $result;
+
+      if(!$result){
+        echo "error occured".mysqli_error();
+      }
+      header('location: index.php');
+      exit();
+    }
+    else{
+
+    
+      $title=$_POST['title'];
+      $description=$_POST['description'];
+      $sql="INSERT INTO `notes` (`srno`, `title`, `description`, `date`) VALUES (NULL, '$title', '$description', current_timestamp())";
+      $result=mysqli_query($conn,$sql);
+
+      if($result){
+        $insert=true;
+      }
+
     }
   }
   
@@ -42,7 +63,7 @@
   <body>
     
 
-    <!-- Button trigger modal -->
+<!-- Button trigger modal -->
 <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
   Launch demo modal
 </button> -->
@@ -56,11 +77,23 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        ...
+      <form action="index.php" method="post">
+        <input type="hidden" name="srnoEdit" id="srnoEdit">
+            <div class="mb-3 ">
+              <label for="title" class="form-label">Title</label>
+              <input type="text" class="form-control" id="titleEdit" name="titleEdit" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Take a note-</label>
+                <textarea class="form-control" id="descriptionEdit" name="descriptionEdit" rows="3"></textarea>
+            </div>
+           
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
       </div>
     </div>
   </div>
@@ -133,8 +166,8 @@
                 <td><?php echo  $row['title'] ?></td>
                 <td><?php echo  $row['description'] ?></td>
                 <td>
-                    <button class="btn btn-primary btn-sm edits">Edit</button>
-                    <button class="btn btn-primary btn-sm">Delete</button>
+                    <button class="btn btn-primary btn-sm edits" id="<?php echo $row['srno'] ?>">Edit</button>
+                    <button class="btn btn-primary btn-sm delt" id="<?php echo $row['srno'] ?>">Delete</button>
                 </td>
               </tr>
               <?php
@@ -170,12 +203,35 @@
             tr=e.target.parentNode.parentNode;
             title=tr.getElementsByTagName('td')[0].innerText;
             description=tr.getElementsByTagName('td')[1].innerText;
-            console.log(title);
-            console.log(description);
+            titleEdit.value=title;
+            descriptionEdit.value=description;
+            srnoEdit.value=e.target.id;
+            // console.log(srnoEdit);
+            // console.log(title);
+            // console.log(description);
             $('#exampleModal').modal('toggle');
 
           })
-        })
+        });
+
+        delt=document.getElementsByClassName('delt');
+        console.log(delt);
+
+        Array.from(delt).forEach((element)=>{
+            element.addEventListener('click',function(e){
+            tr=e.target.parentNode.parentNode;
+            // title=tr.getElementsByTagName('td')[0].innerText;
+            // description=tr.getElementsByTagName('td')[1].innerText;
+            // titleEdit.value=title;
+            // descriptionEdit.value=description;
+            srnoEdit.value=e.target.id;
+            // console.log(srnoEdit);
+            // console.log(title);
+            // console.log(description);
+            // $('#exampleModal').modal('toggle');
+            console.log(srnoEdit.value);
+          })
+        });
       </script>
   </body>
 </html>
