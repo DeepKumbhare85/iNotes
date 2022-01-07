@@ -1,4 +1,6 @@
 <?php
+
+  $insert=false;
   $hostname="localhost";
   $username="root";
   $password="";
@@ -8,6 +10,18 @@
 
   if(!$conn){
     die("sorry we cant connect to database".mysqli_error());
+  }
+
+  if($_SERVER["REQUEST_METHOD"]=="POST"){
+
+    $title=$_POST['title'];
+    $description=$_POST['description'];
+    $sql="INSERT INTO `notes` (`srno`, `title`, `description`, `date`) VALUES (NULL, '$title', '$description', current_timestamp())";
+    $result=mysqli_query($conn,$sql);
+
+    if($result){
+      $insert=true;
+    }
   }
   
 ?>
@@ -55,7 +69,7 @@
 
       <div class="container mt-4">
           <h2>Add a note</h2>
-        <form action="index.html" method="post">
+        <form action="index.php" method="post">
             <div class="mb-3 ">
               <label for="title" class="form-label">Title</label>
               <input type="text" class="form-control" id="title" name="title" aria-describedby="emailHelp">
@@ -69,10 +83,52 @@
           </form>
       </div>
 
+      <div class="container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">sno</th>
+              <th scope="col">Title</th>
+              <th scope="col">Description</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody><?php
+            $sql="SELECT * FROM `notes`";
+            
+            $result=mysqli_query($conn,$sql);
+            // echo $result;
+            $count=1;
+            while($row=mysqli_fetch_assoc($result)){
+              ?>
+            
+              <tr>
+                <th scope="row"><?php echo  $count ?></th>
+                <td><?php echo  $row['title'] ?></td>
+                <td><?php echo  $row['description'] ?></td>
+                <td>
+                    <button class="btn btn-primary btn-sm">Edit</button>
+                    <button class="btn btn-primary btn-sm">Delete</button>
+                </td>
+              </tr>
+              <?php
+              $count++;
+            }
+          ?>
+          </tbody>
+        </table>
+      </div>
 
+
+    <?php
+    if($insert==true){
+      ?>
+      <script>alert("Record added!")</script>
+      <?php
+    }
+    ?>
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
-    
   </body>
 </html>
