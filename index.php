@@ -1,6 +1,8 @@
 <?php
 
   $insert=false;
+  $update=false;
+  $delete=false;
   $hostname="localhost";
   $username="root";
   $password="";
@@ -12,27 +14,29 @@
     die("sorry we cant connect to database".mysqli_error());
   }
 
-  if($_SERVER["REQUEST_METHOD"]=="POST"){
+  if(isset($_GET['delete'])){
+    $id=$_GET['delete'];
+    $sql="DELETE FROM `notes` WHERE `srno` = '$id'";
+    $result=mysqli_query($conn,$sql);
+    // echo $result;
+    if($result){
+      $delete=true;
+    }
+  }
+  
 
+  if($_SERVER["REQUEST_METHOD"]=="POST"){
     if(isset($_POST['srnoEdit'])){
       $srno= $_POST['srnoEdit'];
       $titleEdit=$_POST['titleEdit'];
       $descriptionEdit=$_POST['descriptionEdit'];
-      // echo $srno,$titleEdit,$descriptionEdit;
-
       $sql="UPDATE `notes` SET `title`='$titleEdit',`description`='$descriptionEdit' WHERE `srno` = '$srno'";
       $result=mysqli_query($conn,$sql);
-      // echo $result;
-
-      if(!$result){
-        echo "error occured".mysqli_error();
+      if($result){
+        $update=true;
       }
-      header('location: index.php');
-      exit();
     }
     else{
-
-    
       $title=$_POST['title'];
       $description=$_POST['description'];
       $sql="INSERT INTO `notes` (`srno`, `title`, `description`, `date`) VALUES (NULL, '$title', '$description', current_timestamp())";
@@ -125,9 +129,29 @@
         </div>
       </nav>
 
+      <?php
+        if($insert==true){
+          echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+          <strong>Success </strong> Record inserted!!
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
+        }
+        if($update==true){
+          echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+          <strong>Success </strong> Record updated!!
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
+        }
+        if($delete==true){
+          echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+          <strong>Success </strong> Record Deleted!!
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
+        }
+    ?>
 
       <div class="container mt-4">
-          <h2>Add a note</h2>
+        <h2>Add a note</h2>
         <form action="index.php" method="post">
             <div class="mb-3 ">
               <label for="title" class="form-label">Title</label>
@@ -137,8 +161,7 @@
                 <label for="description" class="form-label">Take a note-</label>
                 <textarea class="form-control" id="description" name="description" rows="3"></textarea>
             </div>
-           
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Add Note</button>
           </form>
       </div>
 
@@ -167,7 +190,7 @@
                 <td><?php echo  $row['description'] ?></td>
                 <td>
                     <button class="btn btn-primary btn-sm edits" id="<?php echo $row['srno'] ?>">Edit</button>
-                    <button class="btn btn-primary btn-sm delt" id="<?php echo $row['srno'] ?>">Delete</button>
+                    <button class="btn btn-primary btn-sm delt" id="<?php echo "d".$row['srno'] ?>">Delete</button>
                 </td>
               </tr>
               <?php
@@ -179,13 +202,9 @@
       </div>
 
 
-    <?php
-    if($insert==true){
-      ?>
-      <script>alert("Record added!")</script>
-      <?php
-    }
-    ?>
+    
+
+    
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
@@ -215,22 +234,20 @@
         });
 
         delt=document.getElementsByClassName('delt');
-        console.log(delt);
+        // console.log(delt);
 
         Array.from(delt).forEach((element)=>{
             element.addEventListener('click',function(e){
-            tr=e.target.parentNode.parentNode;
-            // title=tr.getElementsByTagName('td')[0].innerText;
-            // description=tr.getElementsByTagName('td')[1].innerText;
-            // titleEdit.value=title;
-            // descriptionEdit.value=description;
-            srnoEdit.value=e.target.id;
-            // console.log(srnoEdit);
-            // console.log(title);
-            // console.log(description);
-            // $('#exampleModal').modal('toggle');
-            console.log(srnoEdit.value);
-          })
+              sno=e.target.id.substr(1);
+
+              if(confirm("Are you sure to delete this note?")){
+                
+                window.location=`/crudApp/index.php?delete=${sno}`;
+
+              }else{
+                console.log("no");
+              }
+            })
         });
       </script>
   </body>
