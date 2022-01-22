@@ -77,7 +77,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Edit a Note</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -92,7 +92,7 @@
                 <textarea class="form-control" id="descriptionEdit" name="descriptionEdit" rows="3"></textarea>
             </div>
            
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Update</button>
           </form>
       </div>
       <div class="modal-footer">
@@ -104,7 +104,7 @@
 </div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Navbar</a>
+          <a class="navbar-brand" href="#">iNotes</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -132,19 +132,19 @@
       <?php
         if($insert==true){
           echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
-          <strong>Success </strong> Record inserted!!
+          <strong>Success </strong> your note inserted!!
           <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
         </div>";
         }
         if($update==true){
           echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
-          <strong>Success </strong> Record updated!!
+          <strong>Success </strong> your note updated!!
           <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
         </div>";
         }
         if($delete==true){
           echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
-          <strong>Success </strong> Record Deleted!!
+          <strong>Success </strong> your note Deleted!!
           <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
         </div>";
         }
